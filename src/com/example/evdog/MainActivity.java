@@ -21,6 +21,8 @@ public class MainActivity extends Activity {
 		//==========
 		//启动服务
 		startService(new Intent(this,DogService.class));
+		
+		moveTaskToBack(true);//隐藏当前activity页面
     }
    
 }
