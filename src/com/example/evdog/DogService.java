@@ -102,12 +102,9 @@ public class DogService extends Service {
 	    			{
 	        			tempwatchfeed=watchfeed;
 	    				dogUart=0;
-	    				if(restartNo>0)
-	    				{
-		    				restartNo=0;
-		        			shutdownNo=0;
-		        			WriteSharedPreferences(restartNo,shutdownNo);
-	    				}
+	    				restartNo=0;
+	        			shutdownNo=0;
+	        			WriteSharedPreferences(restartNo,shutdownNo);	    				
 	    				ToolClass.Log(ToolClass.INFO,"EV_DOG","看门狗TaskDiff="+watchfeed+",dogUart="+dogUart,"dog.txt");
 	    			}
 	    			else
@@ -168,7 +165,7 @@ public class DogService extends Service {
 	        		ToolClass.Log(ToolClass.INFO,"EV_DOG","看门狗停止...","dog.txt");
         		}	        		        		        	
 	        } 
-	    },15,15,TimeUnit.SECONDS);       // timeTask 
+	    },3*60,3*60,TimeUnit.SECONDS);       // timeTask 
 	}
 	
 	//读取文件信息
