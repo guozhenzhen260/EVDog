@@ -20,9 +20,12 @@ public class MainActivity extends Activity {
 		//Dog服务相关
 		//==========
 		//启动服务
-		startService(new Intent(this,DogService.class));
+		startService(new Intent(this,DogService.class)); 
 		
 		moveTaskToBack(true);//隐藏当前activity页面
+//		Intent home = new Intent(Intent.ACTION_MAIN);  
+//		home.addCategory(Intent.CATEGORY_HOME);   
+//		startActivity(home);   
     }
    
 }

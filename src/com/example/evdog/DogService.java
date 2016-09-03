@@ -31,7 +31,8 @@ public class DogService extends Service {
 	private int watchfeed=0;//喂食,0时启动操作
 	ActivityReceiver receiver;
 	private int tempwatchfeed=0;//临时变量
-	
+	int restartNo=0,shutdownNo=0;
+	int dogUart=0;
 	
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -94,9 +95,7 @@ public class DogService extends Service {
 		ToolClass.Log(ToolClass.INFO,"EV_DOG","看门狗启动...","dog.txt");
 		timer.scheduleWithFixedDelay(new Runnable() { 
 	        @Override 
-	        public void run() { 	    
-	        	int restartNo=0,shutdownNo=0;
-	        	int dogUart=0;
+	        public void run() { 
 	        	if(allopen==1)
         		{
 	        		if(tempwatchfeed!=watchfeed)
