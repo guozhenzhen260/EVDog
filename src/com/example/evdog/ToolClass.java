@@ -349,129 +349,7 @@ public class ToolClass
         }
     }
     
-    /**
-     * 操作整理日志：隔一天就重命名文件，半个月就清掉这个文件
-     */
-    public static void optLogFile() 
-    {
-    	String  sDir =null;
-    	File fileName=null;
-    	SimpleDateFormat tempDate = new SimpleDateFormat("yyyy-MM-dd" + " "  
-                + "HH:mm:ss"); //精确到毫秒 
     	
-    	//当前时间
-//        String datetime = tempDate.format(new java.util.Date()).toString();  
-//        ParsePosition pos = new ParsePosition(0);  
-//    	Date d1 = (Date) tempDate.parse(datetime, pos); 
-//    	ToolClass.Log(ToolClass.INFO,"EV_DOG","当前时间="+datetime+",="+d1.getTime(),"dog.txt");
-    	 
-    	//起始时间
-        Calendar todayStart = Calendar.getInstance();  
-        todayStart.set(Calendar.HOUR_OF_DAY, 0);  
-        todayStart.set(Calendar.MINUTE, 0);  
-        todayStart.set(Calendar.SECOND, 0);  
-        todayStart.set(Calendar.MILLISECOND, 0); 
-        Date date = todayStart.getTime(); 
-        String starttime=tempDate.format(date);
-        ParsePosition posstart = new ParsePosition(0);  
-    	Date dstart = (Date) tempDate.parse(starttime, posstart);
-    	ToolClass.Log(ToolClass.INFO,"EV_DOG","起始时间="+starttime+",="+dstart.getTime(),"dog.txt");
-        try {
-        	  sDir = ToolClass.getEV_DIR()+File.separator+"logs";
-        	  
-        	  File dirName = new File(sDir);
-        	 //如果目录不存在，则创建目录
-        	 if (!dirName.exists()) 
-        	 {  
-                //按照指定的路径创建文件夹  
-        		dirName.mkdirs(); 
-             }
-        	        	
-        	//2.如果存在log文件，则判断
-        	fileName=new File(sDir+File.separator+"log.txt"); 
-        	if(fileName.exists())
-        	{  
-        		String logdatetime = getFileCreated(fileName);
-        		ParsePosition poslog = new ParsePosition(0);  
-				Date dlog = (Date) tempDate.parse(logdatetime, poslog);
-				ToolClass.Log(ToolClass.INFO,"EV_DOG","判断重命名文件log.txt时间="+logdatetime+",="+dlog.getTime(),"dog.txt");
-        		//判断是否文件早于今天
-            	if(dlog.getTime()<=dstart.getTime())
-            	{
-            		ToolClass.Log(ToolClass.INFO,"EV_DOG"," 文件log重分割","dog.txt"); 
-            		updatefile(fileName,sDir);
-            	}
-            	else
-            	{
-            		ToolClass.Log(ToolClass.INFO,"EV_DOG"," 文件log排除","dog.txt"); 
-            	}
-    	    }
-        	//3.如果存在dog文件，则判断
-        	fileName=new File(sDir+File.separator+"dog.txt"); 
-        	if(fileName.exists())
-        	{  
-        		String logdatetime = getFileCreated(fileName);
-        		ParsePosition poslog = new ParsePosition(0);  
-        		Date dlog = (Date) tempDate.parse(logdatetime, poslog);
-        		ToolClass.Log(ToolClass.INFO,"EV_DOG","判断重命名文件dog.txt时间="+logdatetime+",="+dlog.getTime(),"dog.txt");
-        		
-        		//判断是否文件早于今天
-        		if(dlog.getTime()<=dstart.getTime())
-            	{
-        			ToolClass.Log(ToolClass.INFO,"EV_DOG"," 文件dog重分割","dog.txt"); 
-            		updatefile(fileName,sDir);
-            	}
-        		else
-        		{
-        			ToolClass.Log(ToolClass.INFO,"EV_DOG"," 文件dog排除","dog.txt"); 
-        		}
-    	    } 
-        	//4.如果存在server文件，则判断
-        	fileName=new File(sDir+File.separator+"server.txt"); 
-        	if(fileName.exists())
-        	{  
-        		String logdatetime = getFileCreated(fileName);
-        		ParsePosition poslog = new ParsePosition(0);  
-        		Date dlog = (Date) tempDate.parse(logdatetime, poslog);
-        		ToolClass.Log(ToolClass.INFO,"EV_DOG","判断重命名文件server.txt时间="+logdatetime+",="+dlog.getTime(),"dog.txt");
-        		//判断是否文件早于今天
-        		if(dlog.getTime()<=dstart.getTime())
-            	{
-        			ToolClass.Log(ToolClass.INFO,"EV_DOG"," 文件server重分割","dog.txt"); 
-            		updatefile(fileName,sDir);
-            	}
-        		else
-        		{
-        			ToolClass.Log(ToolClass.INFO,"EV_DOG"," 文件server排除","dog.txt"); 
-        		}
-    	    }
-        	//5.如果存在com文件，则判断
-        	fileName=new File(sDir+File.separator+"com.txt"); 
-        	if(fileName.exists())
-        	{  
-        		String logdatetime = getFileCreated(fileName);
-        		ParsePosition poslog = new ParsePosition(0);  
-        		Date dlog = (Date) tempDate.parse(logdatetime, poslog);
-        		ToolClass.Log(ToolClass.INFO,"EV_DOG","判断重命名文件com.txt时间="+logdatetime+",="+dlog.getTime(),"dog.txt");
-        		//判断是否文件早于今天
-        		if(dlog.getTime()<=dstart.getTime())
-            	{
-        			ToolClass.Log(ToolClass.INFO,"EV_DOG"," 文件com重分割","dog.txt"); 
-            		updatefile(fileName,sDir);
-            	}
-        		else
-        		{
-        			ToolClass.Log(ToolClass.INFO,"EV_DOG"," 文件com排除","dog.txt"); 
-        		}
-    	    }
-        	//6.将目录下的所有文件，如果有超出半个月的，全部删除
-        	delFiles(dirName);
-        	
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-	
 	//获取文件创建时间
     public static String getFileCreated(final File file)  
     {  
@@ -624,8 +502,7 @@ public class ToolClass
             }
             for(File f : childFile)
             {
-            	ToolClass.Log(ToolClass.INFO,"EV_SERVER","删除log="+f.toString(),"server.txt");										
-                f.delete();
+            	f.delete();
             }
         }
     }
@@ -685,7 +562,6 @@ public class ToolClass
         String starttime=tempDate.format(date);
         ParsePosition posstart = new ParsePosition(0);  
     	Date dstart = (Date) tempDate.parse(starttime, posstart);
-    	ToolClass.Log(ToolClass.INFO,"EV_DOG","保存日志的起始时间="+starttime+",="+dstart.getTime(),"dog.txt");
     	
     	//遍历这个文件夹里的所有文件
 		File[] files = file.listFiles();
@@ -702,16 +578,16 @@ public class ToolClass
 		        		String logdatetime = getFileCreated(fileName);
 		        		ParsePosition poslog = new ParsePosition(0);  
 		        		Date dlog = (Date) tempDate.parse(logdatetime, poslog);
-		        		ToolClass.Log(ToolClass.INFO,"EV_DOG","判断日志目录内文件="+files[i].toString()+"时间="+logdatetime+",="+dlog.getTime(),"dog.txt");
+		        		ToolClass.Log(ToolClass.INFO,"EV_DOG","判断日志目录内文件="+files[i].toString()+"时间="+logdatetime+",="+dlog.getTime(),"dogservice.txt");
 		        		//判断是否文件早于本周
 		        		if(dlog.getTime()<=dstart.getTime())
 		            	{
-		        			ToolClass.Log(ToolClass.INFO,"EV_DOG","文件="+files[i].toString()+"删除","dog.txt");
+		        			ToolClass.Log(ToolClass.INFO,"EV_DOG","文件="+files[i].toString()+"删除","dogservice.txt");
 		            		fileName.delete();		            		
 		            	}
 		        		else
 		        		{
-		        			ToolClass.Log(ToolClass.INFO,"EV_DOG","文件="+files[i].toString()+"排除","dog.txt");
+		        			ToolClass.Log(ToolClass.INFO,"EV_DOG","文件="+files[i].toString()+"排除","dogservice.txt");
 		        		}
 		    	    } 
 			  }
@@ -809,8 +685,7 @@ public class ToolClass
             }
             for(File f : childFile)
             {
-            	ToolClass.Log(ToolClass.INFO,"EV_SERVER","删除程序="+f.toString(),"server.txt");										
-                f.delete();
+            	f.delete();
             }
         }
     }
@@ -1453,8 +1328,7 @@ public class ToolClass
 
         for (RunningServiceInfo runningServiceInfo : services) 
         { 
-        	ToolClass.Log(ToolClass.INFO,"EV_DOG","service appName:"+runningServiceInfo.service.getClassName()+"-->pack:"+runningServiceInfo.service.getPackageName(),"dog.txt");
-            if (runningServiceInfo.service.getClassName().equals(serviceClassName))
+        	if (runningServiceInfo.service.getClassName().equals(serviceClassName))
             { 
                 return true; 
             } 

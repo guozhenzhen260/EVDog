@@ -24,6 +24,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.util.Log;
 
 public class DogService extends Service {
 	ScheduledExecutorService timer = Executors.newScheduledThreadPool(1);
@@ -49,7 +50,7 @@ public class DogService extends Service {
 			Bundle bundle=intent.getExtras();
 			int isallopen=bundle.getInt("isallopen");
 			int feed=bundle.getInt("watchfeed");
-			//ToolClass.Log(ToolClass.INFO,"EV_DOG","看门狗isallopen="+isallopen+",feed="+feed,"dog.txt");
+			Log.i("EV_DOG","看门狗isallopen="+isallopen+",feed="+feed);
 			setAllopen(isallopen,feed);	
 		}
 
@@ -61,13 +62,13 @@ public class DogService extends Service {
 	public void setAllopen(int isallopen,int feed) {
 		this.allopen = isallopen;
 		this.watchfeed+=feed;
-		ToolClass.Log(ToolClass.INFO,"EV_DOG","看门狗setAllopen="+allopen+",watchfeed="+watchfeed,"dog.txt");
+		Log.i("EV_DOG","看门狗setAllopen="+allopen+",watchfeed="+watchfeed);
 	}
 	@Override
 	public void onCreate() {
 		// TODO Auto-generated method stub
 		super.onCreate();
-		ToolClass.Log(ToolClass.INFO,"EV_DOG","看门狗创建...","dog.txt");
+		Log.i("EV_DOG","看门狗创建...");
 		//9.注册接收器
 		//localBroadreceiver = LocalBroadcastManager.getInstance(this);
 		receiver=new ActivityReceiver();
@@ -80,7 +81,7 @@ public class DogService extends Service {
 	@Override
 	public void onDestroy() {
 		// TODO Auto-generated method stub
-		ToolClass.Log(ToolClass.INFO,"EV_SERVER","看门狗删除...","dog.txt");
+		Log.i("EV_DOG","看门狗删除...");
 		//解除注册接收器
 		//localBroadreceiver.unregisterReceiver(receiver);
 		unregisterReceiver(receiver);
@@ -92,7 +93,7 @@ public class DogService extends Service {
 	public void onStart(Intent intent, int startId) {
 		// TODO Auto-generated method stub
 		super.onStart(intent, startId);
-		ToolClass.Log(ToolClass.INFO,"EV_DOG","看门狗启动...","dog.txt");
+		Log.i("EV_DOG","看门狗启动...");
 		timer.scheduleWithFixedDelay(new Runnable() { 
 	        @Override 
 	        public void run() { 
@@ -105,12 +106,12 @@ public class DogService extends Service {
 	    				restartNo=0;
 	        			shutdownNo=0;
 	        			WriteSharedPreferences(restartNo,shutdownNo);	    				
-	    				ToolClass.Log(ToolClass.INFO,"EV_DOG","看门狗TaskDiff="+watchfeed+",dogUart="+dogUart,"dog.txt");
+	        			Log.i("EV_DOG","看门狗TaskDiff="+watchfeed+",dogUart="+dogUart);
 	    			}
 	    			else
 	    			{
 	    				dogUart++;
-	    				ToolClass.Log(ToolClass.INFO,"EV_DOG","看门狗TaskSame="+watchfeed+",dogUart="+dogUart,"dog.txt");
+	    				Log.i("EV_DOG","看门狗TaskSame="+watchfeed+",dogUart="+dogUart);
 	    			}
 	        		//重置复位
 	        		if(dogUart>2)
@@ -131,7 +132,7 @@ public class DogService extends Service {
 						{
 							restartNo++;
 							WriteSharedPreferences(restartNo,shutdownNo);
-							ToolClass.Log(ToolClass.INFO,"EV_DOG","看门狗重启程序restartNo="+restartNo+",shutdownNo="+shutdownNo,"dog.txt");
+							Log.i("EV_DOG","看门狗重启程序restartNo="+restartNo+",shutdownNo="+shutdownNo);
 							String MY_PKG_NAME = "com.example.evconsole";
 							Intent intent = new Intent();		        			 
 		        			PackageManager packageManager = DogService.this.getPackageManager();
@@ -144,7 +145,7 @@ public class DogService extends Service {
 						{
 							shutdownNo++;
 							WriteSharedPreferences(restartNo,shutdownNo);
-							ToolClass.Log(ToolClass.INFO,"EV_DOG","看门狗重启机器restartNo="+restartNo+",shutdownNo="+shutdownNo,"dog.txt");
+							Log.i("EV_DOG","看门狗重启机器restartNo="+restartNo+",shutdownNo="+shutdownNo);
 							try {
 								Runtime.getRuntime().exec(new String[]{"/system/bin/su","-c","reboot now"});
 							} catch (IOException e) {
@@ -155,14 +156,14 @@ public class DogService extends Service {
 						//弹出窗口提示故障
 						else
 						{
-		        			ToolClass.Log(ToolClass.INFO,"EV_DOG","看门狗确认系统故障...","dog.txt");
+							Log.i("EV_DOG","看门狗确认系统故障...");
 		        		}
 						
 					}
 	        	}
 	        	else
 	        	{
-	        		ToolClass.Log(ToolClass.INFO,"EV_DOG","看门狗停止...","dog.txt");
+	        		Log.i("EV_DOG","看门狗停止...");
         		}	        		        		        	
 	        } 
 	    },3*60,3*60,TimeUnit.SECONDS);       // timeTask 
