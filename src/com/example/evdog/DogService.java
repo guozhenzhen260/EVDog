@@ -1,7 +1,9 @@
 package com.example.evdog;
 
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +24,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
@@ -147,11 +150,28 @@ public class DogService extends Service {
 							WriteSharedPreferences(restartNo,shutdownNo);
 							Log.i("EV_DOG","看门狗重启机器restartNo="+restartNo+",shutdownNo="+shutdownNo);
 							try {
-								Runtime.getRuntime().exec(new String[]{"/system/bin/su","-c","reboot now"});
+								 if (Build.VERSION.SDK_INT >= 21)
+								 {
+									Runtime mRuntime=Runtime.getRuntime();
+									Process mProcess=mRuntime.exec("reboot");
+									BufferedReader mReader=new BufferedReader(new InputStreamReader(mProcess.getInputStream()));
+									StringBuffer mRespBuff=new StringBuffer();
+									char[] buff=new char[1024];
+									int ch=0;
+									while((ch=mReader.read(buff))!=-1)
+									{
+										mRespBuff.append(buff,0,ch);
+									}
+									mReader.close();
+								 }
+								 else
+								 {
+									Runtime.getRuntime().exec(new String[]{"/system/bin/su", "-c", "reboot now"});
+								 }
 							} catch (IOException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							} 
+						         // TODO Auto-generated catch block
+                                e.printStackTrace();
+						    }
 						}
 						//弹出窗口提示故障
 						else
